@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Nuevo Producto</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+  </head>
+  <body>
+
+    <!-- Interfaz -->
+    <form class="p-4">
+      <div class="form-group">
+        <input type="text" id="nombre" class="form-control" placeholder="Nombre del Producto" autofocus>
+      </div>
+      <div class="form-group">
+        <input type="text" id="precio" class="form-control" placeholder="Precio">
+      </div>
+      <div class="form-group">
+        <input type="text" id="descripcion" class="form-control" placeholder="Descripción">
+      </div>
+      <button class="btn btn-primary btn-block">
+        Guardar
+      </button>
+    </form>
+
+    <!-- Lógica -->
+    <script>
+      const { ipcRenderer } = require('electron');
+
+      const formulario = document.querySelector('form');
+      formulario.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const nombreProducto = document.querySelector('#nombre').value;
+        const precioProducto = document.querySelector('#precio').value;
+        const descripcionProducto = document.querySelector('#descripcion').value;
+
+        /**
+         * Método privado: enviarNuevoProducto
+         * Envía la información del nuevo producto al proceso principal.
+         * @param {string} nombre - Nombre del producto.
+         * @param {string} precio - Precio del producto.
+         * @param {string} descripcion - Descripción del producto.
+         * @private
+         */
+        const enviarNuevoProducto = (nombre, precio, descripcion) => {
+          const nuevoProducto = {
+            nombre: nombre,
+            precio: precio,
+            descripcion: descripcion
+          };
+
+          ipcRenderer.send('product:new', nuevoProducto);
+        };
+
+        // Llamar al método privado
+        enviarNuevoProducto(nombreProducto, precioProducto, descripcionProducto);
+      });
+
+    </script>
+
+  </body>
+</html>
